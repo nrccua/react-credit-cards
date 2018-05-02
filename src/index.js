@@ -103,6 +103,21 @@ class ReactCreditCards extends React.Component {
       nextNumber = nextNumber.slice(0, maxLength);
     }
 
+    if (preview) {
+      const numDigits = ['amex', 'dinersclub'].includes(this.issuer) ? 5 : 4;
+      maxLength = ['amex', 'dinersclub'].includes(this.issuer) ? 15 : maxLength;
+      const cutoff = maxLength - numDigits;
+      let tempNumber = nextNumber;
+      if (nextNumber.length <= (cutoff)) {
+        tempNumber = '*'.repeat(nextNumber.length);
+      }
+      else {
+        tempNumber = '*'.repeat(cutoff);
+        tempNumber = tempNumber.concat(nextNumber.slice(cutoff));
+      }
+      nextNumber = tempNumber;
+    }
+
     while (nextNumber.length < maxLength) {
       nextNumber += '•';
     }
