@@ -26,7 +26,7 @@ class ReactCreditCards extends React.Component {
     expiry: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number,
-    ]).isRequired,
+    ]),
     focused: PropTypes.string,
     issuer: PropTypes.string,
     locale: PropTypes.shape({
@@ -104,8 +104,23 @@ class ReactCreditCards extends React.Component {
     }
 
     if (preview) {
-      const numDigits = ['amex', 'dinersclub'].includes(this.issuer) ? 5 : 4;
-      maxLength = ['amex', 'dinersclub'].includes(this.issuer) ? 15 : maxLength;
+      let numDigits = 4;
+      switch (this.issuer) {
+        case 'amex':
+          numDigits = 5;
+          maxLength = 15;
+          break;
+        case 'dinersclub':
+          if (nextNumber.length > 14) {
+            numDigits = 4;
+            maxLength = 14;
+          } else {
+            numDigits = 4;
+            maxLength = 16;
+          }
+          break;
+        default:
+      }
       const cutoff = maxLength - numDigits;
       let tempNumber = nextNumber;
       if (nextNumber.length <= (cutoff)) {
@@ -122,10 +137,22 @@ class ReactCreditCards extends React.Component {
       nextNumber += '•';
     }
 
-    if (['amex', 'dinersclub'].includes(this.issuer)) {
+    if (this.issuer === 'amex') {
       const format = [0, 4, 10];
       const limit = [4, 6, 5];
       nextNumber = `${nextNumber.substr(format[0], limit[0])} ${nextNumber.substr(format[1], limit[1])} ${nextNumber.substr(format[2], limit[2])}`;
+    }
+    else if (this.issuer === 'dinersclub') {
+      if (maxLength === 14) {
+        const format = [0, 4, 10];
+        const limit = [4, 6, 4];
+        nextNumber = `${nextNumber.substr(format[0], limit[0])} ${nextNumber.substr(format[1], limit[1])} ${nextNumber.substr(format[2], limit[2])}`;
+      }
+      else {
+        const format = [0, 4, 8, 12];
+        const limit = [4, 4, 4, 4];
+        nextNumber = `${nextNumber.substr(format[0], limit[0])} ${nextNumber.substr(format[1], limit[1])} ${nextNumber.substr(format[2], limit[2])} ${nextNumber.substr(format[3], limit[3])}`;
+      }
     }
     else if (nextNumber.length > 16) {
       const format = [0, 4, 8, 12];
