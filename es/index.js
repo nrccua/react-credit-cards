@@ -228,8 +228,23 @@ var ReactCreditCards = function (_React$Component) {
       }
 
       if (preview) {
-        var numDigits = ['amex', 'dinersclub'].indexOf(this.issuer) !== -1 ? 5 : 4;
-        maxLength = ['amex', 'dinersclub'].indexOf(this.issuer) !== -1 ? 15 : maxLength;
+        var numDigits = 4;
+        switch (this.issuer) {
+          case 'amex':
+            numDigits = 5;
+            maxLength = 15;
+            break;
+          case 'dinersclub':
+            if (nextNumber.length > 14) {
+              numDigits = 4;
+              maxLength = 14;
+            } else {
+              numDigits = 4;
+              maxLength = 16;
+            }
+            break;
+          default:
+        }
         var cutoff = maxLength - numDigits;
         var tempNumber = nextNumber;
         if (nextNumber.length <= cutoff) {
@@ -245,14 +260,24 @@ var ReactCreditCards = function (_React$Component) {
         nextNumber += '•';
       }
 
-      if (['amex', 'dinersclub'].indexOf(this.issuer) !== -1) {
+      if (this.issuer === 'amex') {
         var format = [0, 4, 10];
         var limit = [4, 6, 5];
         nextNumber = nextNumber.substr(format[0], limit[0]) + ' ' + nextNumber.substr(format[1], limit[1]) + ' ' + nextNumber.substr(format[2], limit[2]);
+      } else if (this.issuer === 'dinersclub') {
+        if (maxLength === 14) {
+          var _format = [0, 4, 10];
+          var _limit = [4, 6, 4];
+          nextNumber = nextNumber.substr(_format[0], _limit[0]) + ' ' + nextNumber.substr(_format[1], _limit[1]) + ' ' + nextNumber.substr(_format[2], _limit[2]);
+        } else {
+          var _format2 = [0, 4, 8, 12];
+          var _limit2 = [4, 4, 4, 4];
+          nextNumber = nextNumber.substr(_format2[0], _limit2[0]) + ' ' + nextNumber.substr(_format2[1], _limit2[1]) + ' ' + nextNumber.substr(_format2[2], _limit2[2]) + ' ' + nextNumber.substr(_format2[3], _limit2[3]);
+        }
       } else if (nextNumber.length > 16) {
-        var _format = [0, 4, 8, 12];
-        var _limit = [4, 7];
-        nextNumber = nextNumber.substr(_format[0], _limit[0]) + ' ' + nextNumber.substr(_format[1], _limit[0]) + ' ' + nextNumber.substr(_format[2], _limit[0]) + ' ' + nextNumber.substr(_format[3], _limit[1]);
+        var _format3 = [0, 4, 8, 12];
+        var _limit3 = [4, 7];
+        nextNumber = nextNumber.substr(_format3[0], _limit3[0]) + ' ' + nextNumber.substr(_format3[1], _limit3[0]) + ' ' + nextNumber.substr(_format3[2], _limit3[0]) + ' ' + nextNumber.substr(_format3[3], _limit3[1]);
       } else {
         for (var i = 1; i < maxLength / 4; i++) {
           var space_index = i * 4 + (i - 1);
@@ -307,7 +332,7 @@ ReactCreditCards.propTypes = {
   acceptedCards: PropTypes.array,
   callback: PropTypes.func,
   cvc: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  expiry: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  expiry: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   focused: PropTypes.string,
   issuer: PropTypes.string,
   locale: PropTypes.shape({
