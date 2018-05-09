@@ -113,10 +113,10 @@ class ReactCreditCards extends React.Component {
         case 'dinersclub':
           if (nextNumber.length > 14) {
             numDigits = 4;
-            maxLength = 14;
+            maxLength = 16;
           } else {
             numDigits = 4;
-            maxLength = 16;
+            maxLength = 14;
           }
           break;
         default:
@@ -150,7 +150,7 @@ class ReactCreditCards extends React.Component {
       }
       else {
         const format = [0, 4, 8, 12];
-        const limit = [4, 4, 4, 4];
+        const limit = [4, 4, 4, 7];
         nextNumber = `${nextNumber.substr(format[0], limit[0])} ${nextNumber.substr(format[1], limit[1])} ${nextNumber.substr(format[2], limit[2])} ${nextNumber.substr(format[3], limit[3])}`;
       }
     }
