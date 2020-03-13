@@ -120,7 +120,7 @@
     "watch": "npm run build && watch-run -p 'src/**/*.js' npm run build:es",
     "clean": "rimraf es && rimraf lib",
     "start": "node demo/config/webpack.server.js",
-    "build:demo": "NODE_ENV=production webpack --config demo/config/webpack.build.js",
+    "build:demo": "cross-env NODE_ENV=production webpack --config demo/config/webpack.build.js",
     "analyze": "NODE_ENV=production webpack --config config/webpack.build.js --profile --json > webpack.stats.json",
     "lint": "eslint  --ext .js --ext .jsx src test tasks",
     "lint:styles": "stylelint 'src/**/*.scss'",
